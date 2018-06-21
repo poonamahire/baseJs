@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>location</title>
+</head>
+<body>
+    <h1>location reference</h1>
+    <button onclick="display()">Display Location</button>
+<p id="displayLoc"></p>
+<p id="display"></p>
+<script>
+    function display(){
+        //document.getElementById('displayLoc').innerHTML = window.location.href;
+       // document.getElementById('displayLoc').innerHTML = window.location.port;
+      //  document.getElementById('displayLoc').innerHTML = window.location.hostname;
+      var str=document.getElementById('displayLoc').innerHTML = window.location.pathname;
+    
+      //var str1 = "/browserobjectmodel.html";
+      //var arr = str1.split("/");
+      //console.log("Array : ", arr[1]);
+     // console.log('Slice',str1);
+document.getElementById('display').innerHTML=str.slice(1);
+
+
+
+
+    }
+</script>
+</body>
+</html>

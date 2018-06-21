@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>coockies</title>
+</head>
+<body>
+    <select id="getcol" onchange="setcolor()">
+        <option value= "select value">Select value</option>
+        <option value= "red">red</option>
+        <option value= "yellow">yellow</option>
+        <option value= "blue">blue</option>
+
+
+    </select>
+<script>
+   window.onload=function()
+   {
+       console.log(document.cookie);
+       if(document.cookie.length!=0)
+       {
+           var nameValueArray=document.cookie.split("=");
+           document.getElementById("getcol").value=nameValueArray[1];
+           document.bgColor=nameValueArray[1];
+       }
+   }
+
+    function setcolor()
+    {
+       // document.getElementById('main').style.backgroundColor=red;
+        var selectvalue=document.getElementById("getcol").value;
+        if(selectvalue!="select color")
+        {
+            document.bgColor=selectvalue;
+            document.cookie="color="+selectvalue+";expires=fri,5 Aug 2018 01:00:00 UTC;";
+        }
+    }
+</script>
+
+
+</body>
+</html>
