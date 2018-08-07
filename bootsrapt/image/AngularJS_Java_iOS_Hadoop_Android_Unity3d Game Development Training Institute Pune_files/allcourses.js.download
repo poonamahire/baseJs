@@ -1,0 +1,52 @@
+  courseList = ["100% Placement", "Android", "Kotlin", "Java & adv. java", "iOS objective C", "iOS  swift", "Unity", "Machine Learning", "C Programming", "C++ Programming", "C# / ASP.net", "Python", "Data Structure", "Spring", "Hibernate", "Struts", "Hadoop", "Bootstrap", "WordPress", "HTML 5", "CSS 3 ", "JavaScript", "Angular JS ", "PHP", "Jquery", "Oracle", "Postgres", "MySQL", "MongoDB", "PLSQL", "SQLite", "Data Science", "Manual Testing", "Automation Testing", "Mobile Automation Testing"];
+
+$.each(courseList, function (index, value) {
+  var val = value;
+  var htm = '';
+  htm = '<option value ="' + val + '">' + val + '</option>';
+  $('#langOpt').append(htm);
+  $('#techOpt').append(htm);
+  $('#chCourseList').append(htm);
+
+});
+$('#langOpt').multiselect({
+  columns: 1,
+  includeSelectAllOption: true,
+  maxHeight: 150,
+  nonSelectedText: 'Please select technology',
+  onChange: function (option, checked) {
+    if (checked) {
+      //   console.log("checked", checked, option);
+      $("#errorDemoTechnology").removeClass("showItem");
+      $("#errorDemoTechnology").addClass("showItem");
+      $("#errorDemoTechnology").html(" ");
+      return false;
+    } else {
+      //   console.log("checked", checked, option);
+      $("#errorDemoTechnology").addClass("showItem");
+      $("#errorDemoTechnology").html("Please select technology");
+      return true;
+    }
+  }
+});
+
+$('#techOpt').multiselect({
+  columns: 1,
+  includeSelectAllOption: true,
+  maxHeight: 150,
+  nonSelectedText: 'Please select technology',
+  onChange: function (option, checked) {
+    if (checked) {
+      //   console.log("checked", checked, option);
+      $("#errorDemoTechnology").removeClass("showItem");
+      $("#errorDemoTechnology").addClass("showItem");
+      $("#errorDemoTechnology").html(" ");
+      return false;
+    } else {
+      //   console.log("checked", checked, option);
+      $("#errorDemoTechnology").addClass("showItem");
+      $("#errorDemoTechnology").html("Please select technology");
+      return true;
+    }
+  }
+});

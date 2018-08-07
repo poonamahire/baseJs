@@ -1,0 +1,57 @@
+.stikcy_btn_cnt .stikcy_btn .Hiring{background-color:#3f51b5;border-color:#3f51b5;float:right;margin-right:50px;}
+@media only screen and (min-device-width:320px) and (max-device-width:480px){.stikcy_btn_cnt .stikcy_btn .Hiring{background-color:#3f51b5;border-color:#3f51b5;float:none;margin-right:0px;}
+}
+.btnContainer label{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0;cursor:pointer;text-align:center;color:#fff;float:right;margin:0px 5%;border:none;text-decoration:underline;text-decoration-line:underline;text-decoration-style:initial;text-decoration-color:initial;}
+.btnContainer label a{color:#fff;}
+.addvertising{border:1px solid #aaa;margin:0 15px;width:25%;padding:10px;float:right;z-index:1;text-align:center;position:relative;margin-top:-150px;}
+.addvertising button#CloseID{top:-15px;right:-15px;position:absolute;}
+.addvertising h4{margin:10px 0px;color:#4253b3;font-weight:600;}
+.addvertising h6{margin:10px 0px;color:#4b8211;}
+.addvertising h6 p{color:#07639d;}
+.addvertising p{padding:0px;margin:5px;}
+.addvertising p span{font-weight:600;}
+.addvertising p a{padding:0px 5px;color:#ff4a3d;}
+.addvertising p a i.fa.fa-envelope{padding:0 5px;}
+.addvertising.springPage{border:1px solid #aaa;margin:0 15px;width:95%;padding:10px;float:right;z-index:1;text-align:center;position:relative;margin-top:-95px;}
+.addvertising.springPage button#CloseID{top:-15px;right:-15px;position:absolute;}
+.addvertising.springPage h4{margin:10px 0px;color:#4253b3;font-weight:600;}
+.addvertising.springPage h6{margin:10px 0px;color:#4b8211;}
+.addvertising.springPage h6 p{color:#07639d;}
+.addvertising.springPage p{padding:0px;margin:5px;}
+.addvertising.springPage p span{font-weight:600;color:#000;}
+.addvertising.springPage p a{padding:0px 5px;color:#000;}
+.addvertising.springPage p a i.fa.fa-envelope{padding:0 5px;color:#ff4a3d;}
+.addvertising.jobPage{border:1px solid #aaa;margin:0 auto;width:80%;padding:10px;float:none;z-index:1;text-align:center;position:relative;margin-top:10px;}
+.addvertising.jobPage button#CloseID{top:-15px;right:-15px;position:absolute;}
+.addvertising.jobPage h4{margin:10px 0px;color:#4253b3;font-weight:600;}
+.addvertising.jobPage h6{margin:10px 0px;color:#4b8211;}
+.addvertising.jobPage h6 p{color:#07639d;}
+.addvertising.jobPage p{padding:0px;margin:5px;}
+.addvertising.jobPage p span{font-weight:600;color:#000;}
+.addvertising.jobPage p a{padding:0px 5px;color:#000;}
+.addvertising.jobPage p a i.fa.fa-envelope{padding:0 5px;color:#ff4a3d;}
+.notification-badge{position:absolute;right:5px;top:-5px;color:#ffffff;background-color:#FF4081;margin:0 -0.8em;border-radius:50%;padding:0px 5px;}
+.notification-badge.sm{position:absolute;right:15%;top:3px;color:#ffffff;background-color:#FF4081;margin:0 -0.8em;border-radius:50%;padding:2px 5px;}
+.opening-title{margin-bottom:5px;padding-left:0px;margin-top:100px;}
+.opening-title h4{text-align:center;}
+.opening-title h4 a{font-weight:600;display:block;color:#fff;position:relative;z-index:100;}
+@media only screen and (min-device-width:320px) and (max-device-width:480px){.addvertising{border:1px solid #aaa;float:none;margin:0 auto;width:90%;padding:10px;z-index:1;text-align:center;position:relative;margin-top:-155px;}
+.addvertising h4{margin:10px 0px;color:#4253b3;font-weight:600;}
+.addvertising h6{margin:10px 0px;color:#4b8211;}
+.addvertising h6 p{color:#07639d;}
+.addvertising p{padding:0px;margin:5px;}
+.addvertising p span{font-weight:600;}
+.addvertising.springPage{border:1px solid #aaa;margin:0 auto;width:100%;padding:10px;float:right;z-index:1;text-align:center;position:relative;margin-top:5px;margin-bottom:5px;}
+.addvertising.springPage button#CloseID{top:-15px;right:-15px;position:absolute;}
+.addvertising.springPage h4{margin:10px 0px;color:#4253b3;font-weight:600;}
+.addvertising.springPage h6{margin:10px 0px;color:#4b8211;}
+.addvertising.springPage h6 p{color:#07639d;}
+.addvertising.springPage p{padding:0px;margin:5px;}
+.addvertising.springPage p span{font-weight:600;color:#000;}
+.addvertising.springPage p a{padding:0px 5px;color:#000;}
+.addvertising.springPage p a i.fa.fa-envelope{padding:0 5px;color:#ff4a3d;}
+.opening-title{margin-bottom:5px;padding-left:70px;margin-top:0px;}
+.opening-title h4{text-align:center;}
+.opening-title h4 a{font-weight:600;display:block;color:#fff;position:relative;z-index:100;line-height:1;}
+.ctnIcon{text-align:left;padding:0px 10px;}
+}
