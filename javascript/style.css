@@ -1,0 +1,3 @@
+.numbered-list__counter {
+    counter-increment: counter-name;
+}
