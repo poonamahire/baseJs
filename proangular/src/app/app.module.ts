@@ -1,16 +1,20 @@
-import { LoginModule } from './login/login.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
+import { FlagComponent } from './flag/flag.component';
+import { ImgComponent } from './img/img.component';
+import { ImageDirective } from './img/image.directive';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FlagComponent,
+    ImgComponent,
+    ImageDirective
   ],
   imports: [
-    BrowserModule,
-    LoginModule
+    BrowserModule
   ],
   providers: [],
   bootstrap: [AppComponent]

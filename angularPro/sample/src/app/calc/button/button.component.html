@@ -1,0 +1,38 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<input type="number" [(ngModel)]='num1' name="num1" placeholder="enter number 1">
+<input type="number" [(ngModel)]='num2' name="num2" placeholder="enter number 2">
+<br>
+<br>
+<input type={{result}} [(ngModel)]='result' name="result" placeholder="result">
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<button>1</button>
+<button>2</button>
+<button>3</button>
+<button (click)="cal_add()">Addition</button>
+<br>
+<button>4</button>
+<button>5</button>
+<button>6</button>
+<button (click)="cal_sub()">Subtraction</button>
+<br>
+<button>7</button>
+<button>8</button>
+<button>9</button>
+<button (click)="cal_mul()"> Multiplication</button>
+<br>
+<button>0</button>
+<!-- <button>=</button> -->
+
+<button (click)="cal_div()"> Division</button>
+<br>
+<br>
