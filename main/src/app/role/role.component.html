@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <!-- <div class="card mb-3"> -->
+                    <img class="card-img-top" src="./assets/teacher.jpg" alt="Card image cap">
+
+                    <div class="card-body">
+                        <!-- <h5 class="card-title">Special title treatment</h5>
+                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+
+                        <button type="button"><a routerLink="/teacher " (click)="teacher() " routerLinkActive="active ">Teacher</a></button>
+                        <!-- <a href="# " class="btn btn-primary ">Teacher</a> -->
+                    </div>
+                </div>
+            </div>
+            <!-- </div> -->
+            <div class="col-sm-6 ">
+                <div class="card ">
+                    <img class="card-img-top " src="./assets/student3.jpg " alt="Card image cap ">
+
+                    <div class="card-body ">
+                        <!-- <h5 class="card-title ">Special title treatment</h5>
+                        <p class="card-text ">With supporting text below as a natural lead-in to additional content.</p> -->
+                        <!-- <a href="# " class="btn btn-primary ">Student</a> -->
+                        <button type="button"><a routerLink="/student " (click)="student() " routerLinkActive="active ">Student</a></button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,568 @@
+// PAGE TRANSITIONS - IN
+// ===============================================
+
+$(window).on('load', function() {
+	$('#loader').fadeOut(600, function() {
+		$('#loader-spinner').removeClass('spinner-show');
+	});
+});
+
+$(document).ready(function(){
+	var $window = $(window),
+			$body = $('body'),
+			$sizers = $('#css-sizers');
+
+	// PAGE TRANSITIONS - OUT
+	// ===============================================
+
+	// if ( $body.hasClass('home') ) {
+	// 	// Fade out loader once the first image is loaded
+	// 	// $('#loader').fadeOut(600);
+	// }
+	// else {
+	// 	// Fade out loader immediately on doc ready
+	// 	$('#loader').fadeOut(600);
+	// }
+
+	// Page transition from valid links
+	$('body').on('click', 'a:not([href^="#"]):not([href^="mailto:"]):not([href^="tel:"]):not(.no-loader)', function(e) {
+		if ( this.href.indexOf(Syngency.agencyHostname) !== -1 ) {
+			$('#loader').fadeIn(50);
+		}
+	});
+
+	// SITE NAV: Includes mobile and sliding horizontal nav
+	// ==========================================================
+	var $navSiteNavs = $('nav.site-nav'),
+			$navMobile = $('#mobile-nav'),
+			$navMobileInner = $navMobile.find('.nav-mobile-inner'),
+			$navMain = $('#main-nav'),
+			$navHistory = $navMain.find('#nav-history'),
+			$navSelect = $navMain.find('#nav-select'),
+			navAnimType = {'opacity': 'toggle'}, // Default animation style
+			navAnimSpeed = 200; // For sliding effects
+
+	// Mobile nav toggle
+	$('#layout-off-canvas .nav-toggle').on('click', '.a', function(e){
+		e.preventDefault();
+		$body.addClass('js--nav-animating').delay(500).queue(function(next) {
+			$body.removeClass('js--nav-animating');
+			next();
+		})
+		$body.toggleClass('js--nav-visible');
+	});
+
+	// Functions for use inside home / main / mobile nav animations
+	// ----------------------------------------------------------
+
+	// Nav select: show parent level, hide current
+	function navShowParents($li) {
+		$li.parent('ul')
+			.removeClass('active')
+			.closest('ul.active-parent')
+			.removeClass('active-parent')
+			.addClass('active');
+	}
+	// Nav select: show child level, hide current
+	function navShowChildren($li) {
+		$li.parent('ul')
+			.removeClass('active')
+			.addClass('active-parent');
+		$li.children('ul')
+			.addClass('active');
+	}
+
+	// Add in the 'back' elements to sub-nav lists, aligned for left, right, center / mobile navs
+	$navMobile.find('ul ul').prepend('<li class="back"><a><span class="icon-chevron-thin-up"></span></a></li>');
+	if ( $navMain.hasClass('nav-left') ) {
+		$navSelect.find('ul ul').append('<li class="back"><a><span class="icon-chevron-thin-left va-push-down"></span></a></li>');
+	}
+	else {
+		$navSelect.find('ul ul').prepend('<li class="back"><a><span class="icon-chevron-thin-left va-push-down"></span></a></li>');
+	}
+
+	// Click on a nav item...
+	// ----------------------------------------------------------
+	$navSiteNavs.on('click', 'a', function(e){
+		// e.stopPropagation();
+		var $clickedEl = $(this),
+				$clickedNav = $clickedEl.closest('nav'),
+				$animEl = $clickedNav.is('#main-nav') ? $navSelect.children('ul') : $navMobileInner;
+				$clickedLi = $clickedEl.parent('li'),
+				clickedLevel = $clickedLi.parent('ul').data('nav-depth'),
+				clickedText = $clickedEl.text(),
+				isFirstLevel = $navHistory.contents().length ? false : true;
+
+		// Stop <a> links firing and event bubble if it's a list parent or back button, handle below
+		if ( $clickedLi.children('ul').length || $clickedLi.hasClass('back') ) e.stopImmediatePropagation();
+
+		// Change navAnimType if mobile or center aligned nav
+		// navAnimType = ( $clickedNav.is('.nav-center') || $clickedNav.is('#mobile-nav') ) ? {'opacity': 'toggle'} : {'width': 'toggle'};
+
+		// Back button
+		if ( $clickedLi.hasClass('back') ) {
+			// Main nav behaviour
+			if ( $clickedNav.is('#main-nav') ) {
+				// Remove last selected item from history
+				var $navHistoryItems = $navHistory.contents();
+				$navHistoryItems.slice($navHistoryItems.length - 1).animate({'width': '0'}, navAnimSpeed, function(){
+					$(this).remove();
+				});
+			}
+			// Animate nav out, hide clicked level, show parent level
+			$animEl.animate(navAnimType, navAnimSpeed, function(){
+				navShowParents($clickedLi);
+			});
+			// Animate nav back in
+			$animEl.animate(navAnimType, navAnimSpeed);
+		}
+
+		// Nav parent item
+		else if ( $clickedLi.children('ul').length ) {
+			// Animate nav out, hide clicked level, show child level
+			$animEl.animate(navAnimType, navAnimSpeed, function(){
+				navShowChildren($clickedLi);
+				// Main nav history adjustment
+				if ( $clickedNav.is('#main-nav') ) {
+					// Append selected item to history (.new-item is hidden)
+					var sep = isFirstLevel ? '' : '<span class="sep">/</span>';
+					$navHistory.append('<div class="new-item" data-nav-depth="'+clickedLevel+'">'+sep+clickedText+'</div>');
+					// Get the history item width, set it to zero, unhide and animate it back out
+					var $newHistoryItem = $navHistory.children('.new-item').first(),
+							width = $newHistoryItem.width();
+					$newHistoryItem.css('width', '0').removeClass('new-item').animate({width: width}, navAnimSpeed);
+				}
+			});
+			// Animate nav back in
+			$animEl.animate(navAnimType, navAnimSpeed);
+
+		}
+	});
+
+	// Click on a history item...
+	// ----------------------------------------------------------
+	$navHistory.on('click', 'div', function(){
+		var clickedLevel = $(this).data('nav-depth'),
+				$activeListEl = $navSelect.find('ul.active'),
+				activeLevel = $activeListEl.data('nav-depth');
+
+		// Remove the clicked history item and all sub-history items
+		var $navHistoryItems = $navHistory.contents();
+		$navHistoryItems.each(function(){
+			if ( $(this).data('nav-depth') >= clickedLevel ) {
+				$(this).animate({width: '0'}, navAnimSpeed, function(){
+					$(this).remove();
+				});
+			}
+		});
+
+		// Suck nav back, hide current level, show clicked level, remove .active-parent from any children (when traversing multiple levels)
+		$navSelect.children('ul').animate({width: 'toggle'}, navAnimSpeed, function(){
+			$activeListEl.removeClass('active')
+				.closest('ul[data-nav-depth="'+clickedLevel+'"]').removeClass('active-parent').addClass('active')
+				.find('ul').removeClass('active-parent');
+		});
+		// Slide nav back out
+		$navSelect.children('ul').animate({width: 'toggle'}, navAnimSpeed);
+	});
+
+	// HOME
+	// ==========================================================
+
+	// Hero Parallax with RAF
+	if ( $('#hero-parallax').length && $sizers.find('#is-lg').is(':visible') ) {
+
+		var $parallaxEl = $('#hero-parallax'),
+				windowHeight = $window.height();
+		$window.on('resize', function(){
+			windowHeight = $window.height();
+		});
+		// requestAnimationFrame Shim
+		window.requestAnimFrame = (function() {
+			return  window.requestAnimationFrame ||
+							window.webkitRequestAnimationFrame ||
+							window.mozRequestAnimationFrame ||
+							function(callback) {
+								window.setTimeout(callback, 1000 / 60);
+							};
+		})();
+		// Scroller
+		function Scroller() {
+			this.latestKnownScrollY = 0;
+			this.ticking = false;
+		}
+		Scroller.prototype = {
+			// Initialise
+			init: function() {
+				window.addEventListener('scroll', this.onScroll.bind(this), false);
+			},
+			// Capture scroll
+			onScroll: function() {
+				this.latestKnownScrollY = window.scrollY;
+				this.requestTick();
+			},
+			// Request a tick
+			requestTick: function() {
+				if( !this.ticking ) {
+					window.requestAnimFrame(this.update.bind(this));
+				}
+				this.ticking = true;
+			},
+			// Update
+			update: function() {
+				var currentScrollY = this.latestKnownScrollY;
+				this.ticking = false;
+				// Animations
+				var scrollMod = Math.round(currentScrollY / 2.2);
+				$parallaxEl.css({'transform': 'translate3d(0, ' + scrollMod + 'px, 0)'});
+			}
+		};
+		// Attach
+		var scroller = new Scroller();
+		scroller.init();
+	}
+
+	// Hero Slider
+	if ( $('#slider-hero li').length > 1 ) {
+		function homeHeroSlider() {
+			var $slider = $('#slider-hero'),
+					slideDelay = 6000,
+					transitionTime = 2000; // Match in CSS
+			setInterval(function() {
+				$slider.find('li.slide:first')
+					.next()
+					.addClass('next')
+					.end()
+					.addClass('animating')
+					.delay(transitionTime)
+					.queue(function(next) {
+						$(this).removeClass('active')
+						.next()
+						.addClass('active')
+						.removeClass('next')
+						.end()
+						.removeClass('animating')
+						.appendTo($slider);
+						next();
+					});
+			}, slideDelay);
+		}
+		homeHeroSlider();
+	}
+
+
+	// MODEL SEARCH
+	// ==========================================================
+
+	// Search UI
+	var $searchOverlay = $('#overlay-search');
+	function searchActivate() {
+		$body.addClass('js--search-visible');
+		$searchOverlay.fadeIn(150);
+		$searchOverlay.find('input').focus();
+	}
+	function searchDeactivate() {
+		$searchOverlay.fadeOut(150);
+		$body.removeClass('js--search-visible');
+		$searchOverlay.find('input').blur();
+	}
+	$('.search-toggle').click(function() {
+		if ( $body.hasClass('js--search-visible') ) {
+			searchDeactivate();
+		}
+		else {
+			searchActivate();
+		}
+	});
+	$searchOverlay.on('click', '.close', function() {
+		searchDeactivate();
+	});
+	$(document).on('keyup', function(e) {
+		if ( e.keyCode == 27 && $searchOverlay.is(':visible') ) { // esc keycode
+			searchDeactivate();
+		}
+	})
+
+	// Search functions
+	var searchRequest = null,
+			searchVal = '',
+			searchLastVal = '',
+			searchMinLength = 2,
+			searchMaxResults = 4,
+			$searchForm = $('#search-models'),
+			$searchResultsEl = $('#search-results');
+
+	function searchGetResults() {
+		searchVal = $searchForm.find('input').val();
+		if ( searchVal !== searchLastVal ) {
+			if ( searchVal.length >= searchMinLength ) {
+				if (searchRequest != null) searchRequest.abort();
+				searchRequest = $.ajax({
+					dataType: 'json',
+					type: 'GET',
+					url: '/search/?q='+searchVal+'&output=json'
+				}).done(function(response) {
+					searchClearResults();
+					searchUpdateResults(response.search.results);
+				}).fail(function(jqXHR, textStatus, error) {
+					console.warn('AJAX model search failed ('+textStatus+': '+JSON.stringify(error)+')');
+				});
+				searchLastVal = searchVal;
+			}
+			else {
+				searchClearResults();
+			}
+		}
+	}
+	function searchClearResults() {
+		$searchResultsEl.empty();
+	}
+	function searchResultsNoteHtml(n) {
+		var plural = n > 1 ? 's' : '',
+				text = n > 0 ? '+ '+n+' more result'+plural : 'No models match your search';
+		return '<h6 class="mt-4 text-center">'+text+'</h6>';
+	}
+	function searchUpdateResults(results) {
+		var validResults = 0;
+		if ( results && results.length ) {
+			for (var i = 0; i < results.length; i++ ) {
+				if ( results[i].divisions.length ) {
+					validResults++;
+					if ( validResults <= searchMaxResults ) {
+						var modelRow = '<a href="'+Syngency.agencyUrl+'/divisions/'+results[i].divisions[0].url+results[i].url+'" class="model-result d-flex align-items-center mb-3" data-id="'+results[i].id+'" title="'+results[i].display_name+'"><img src="'+results[i].headshot_url+'" class="thumbnail mr-3" alt="" />'+results[i].display_name+'</a>';
+						$searchResultsEl.append(modelRow);
+					}
+				}
+				$('#search-models img').on('error', function() {
+					console.warn('img link broken');
+					$(this).hide();
+				});
+			}
+			if ( validResults > searchMaxResults ) $searchResultsEl.append(searchResultsNoteHtml(validResults - searchMaxResults));
+		}
+		else {
+			$searchResultsEl.append(searchResultsNoteHtml(0));
+		}
+	}
+	$searchForm.on('keyup', 'input', function() {
+		searchGetResults();
+	});
+	$searchForm.on('submit', function(e) {
+		e.preventDefault();
+		searchGetResults();
+	});
+
+
+	// DIVISION > MODEL GRID
+	// ==========================================================
+	if ( $('.grid-models .grid-item').length ) {
+		var $modelGrid = $('.grid-models'),
+				$modelGridItems = $modelGrid.find('.grid-item'),
+				$modelGridModels = $modelGridItems.find('.model');
+
+		// Lazy loading effects
+		// ----------------------------------------------------------
+		$('.model img').on('lazyload', function() { $(this).closest('.model').addClass('js--lazy-load'); });
+		$('.model img').on('error', function() { $(this).hide().siblings('.overlays').find('.gradient').hide().closest('.model').addClass('js--lazy-load'); });
+
+		// Show new grid items on scroll
+		$modelGridItems.each(function() {
+			if ( !$(this).visible(true, true) ) {
+				$(this).addClass('js--pre-visible');
+			}
+		});
+		$window.scroll(function() {
+			$modelGridItems.each(function() {
+				if ( $(this).visible(true, true) ) {
+					$(this).removeClass('js--pre-visible');
+				}
+			});
+		});
+
+	}
+
+
+	// MODEL PORTFOLIO
+	// ==========================================================
+
+	// Measurement Unit Switcher
+	// ----------------------------------------------------------
+	if ( $('#unit-switcher').length ) {
+		var $measurementSwitcher = $('#unit-switcher'),
+				$measurementSwitchTarget = $($measurementSwitcher.data('target'));
+		$measurementSwitcher.on('click', 'span[data-active="0"]', function(e) {
+			// Inactive switch clicked
+			e.stopImmediatePropagation();
+			var $switchTo = $(this).data('switch');
+			// Toggle active and toggle switchable el units
+			$(this).attr('data-active', '1').siblings('[data-active="1"]').attr('data-active', '0');
+			$measurementSwitchTarget.attr('data-show-unit', $switchTo);
+		});
+	}
+
+	// Gallery Sliders
+	// ----------------------------------------------------------
+	var $modelSliders = $('body.model .slider');
+	if ( $modelSliders.length ) {
+		function modelSliderOptions() {
+			return {
+				item: 1,
+				slideMargin: 0,
+				loop: false,
+				pager: false,
+				gallery: false,
+			}
+		}
+
+		var modelLightSliders = [];
+		$modelSliders.each(function() {
+			if ( $(this).find('.slide').length > 1 ) {
+				modelLightSliders.push( $(this).lightSlider(modelSliderOptions()) );
+			}
+		});
+
+	}
+
+	// Model page nav & print
+	// ----------------------------------------------------------
+	if ( $('body.model .content-page').length ) {
+		var $modelPageNav = $('body.model nav.model-nav'),
+				$modelPages = $('body.model .content-page'),
+				$modelPrintOpt = $('#model-print-options'),
+				modelContentIsTransitioning = false;
+
+		function modelUpdatePdfLinks(newGalleryId) {
+			var currentGalleryId = $modelPrintOpt.attr('data-gallery-id');
+			$modelPrintOpt.attr('data-gallery-id', newGalleryId);
+			$modelPrintOpt.find('a').each(function() {
+				var oldHref = $(this).attr('href'),
+						newHref = oldHref.replace(currentGalleryId, newGalleryId);
+				$(this).attr('href', newHref);
+			});
+		}
+
+		function modelRefreshGallery(selectedGallery) {
+			$.each(modelLightSliders, function(i, el) {
+				if ( $(this).data('gallery') == selectedGallery ){
+					modelLightSliders[i].refresh();
+				}
+			});
+		}
+
+		function modelTransitionPages($pageOut, $pageIn, $navAllAnchors, $navInAnchor) {
+			// Check not currently transitioning and not same click
+			if ( $pageOut.attr('id') != $pageIn.attr('id') && !modelContentIsTransitioning ) {
+				modelContentIsTransitioning = true;
+				$navAllAnchors.removeClass('active');
+				$navInAnchor.addClass('active');
+				$pageIn.addClass('transition-in');
+				if ( $pageIn.find('.slider').length ) {
+					// Refresh gallery of new page (ensure slider height is 100% once container is drawn)
+					modelRefreshGallery($pageIn.data('gallery'))
+				}
+				$pageOut.addClass('transition-out').delay(250).queue(function(next) {
+					$pageIn.addClass('animating').delay(750).queue(function(next) {
+						$pageIn.removeClass('transition-in animating').addClass('active');
+						$pageOut.removeClass('transition-out active');
+						modelContentIsTransitioning = false;
+						next();
+					});
+					next();
+				});
+			}
+		}
+
+		$modelPageNav.on('click', '.print-options a', function(e) {
+			// Prevent PDF size links bubbling up to close options
+			e.stopPropagation();
+		});
+
+		$modelPageNav.on('click', '.a', function(e) {
+			e.preventDefault();
+			var target = $(this).data('target'),
+					$selectedPage = $modelPages.filter(function() {
+						return this.id == target;
+					}),
+					$lastPage = $modelPages.filter(function() {
+						return $(this).hasClass('active');
+					}),
+					defaultGalleryId = $modelPageNav.find('.a[data-gallery-id]').first().attr('data-gallery-id'),
+					selectedGalleryId = defaultGalleryId;
+
+			// Print / PDF export
+			if ( target && target.toLowerCase() == 'print' ) {
+				var $this = $(this);
+				$this.toggleClass('active');
+				$(document).on('mouseup.hidePrintOptions', function(e) {
+					if ( !$this.is(e.target) && $this.has(e.target).length === 0) {
+						$this.removeClass('active');
+						$(document).off('mouseup.hidePrintOptions');
+					}
+				})
+			}
+			else if ( $selectedPage.length ) {
+				// Update gallery PDF links if gallery page selected
+				selectedGalleryId = $selectedPage.attr('data-gallery-id') || selectedGalleryId;
+				modelUpdatePdfLinks(selectedGalleryId);
+				// Transition pages & update model nav
+				modelTransitionPages($lastPage, $selectedPage, $modelPageNav.find('.a'), $(this));
+			}
+		});
+	}
+
+	// Instagram feeds
+	// ----------------------------------------------------------
+
+	// Home feed @chadwickmodels
+	if ( $('#home-grid').length ) {
+		$('#home-grid').gramfeed({
+			username: 'chadwickmodels',
+            size: 320,
+			template: '<div class="col-6 col-lg-4 col-xl-3 mb-4"><a href="{{link}}" rel="nofollow" target="_blank" class="instagram-img orient-{{orientation}}" style="background-image:url({{image}})" title="Open in Instagram"><div class="meta d-flex flex-column justify-content-center align-items-center text-center"><div class="likes mb-3"><i class="icon-heart small text-white"></i><span class="h5 font-alt text-white">{{likes}}</span></div><div class="comments"><i class="icon-bubble small text-white"></i><span class="h5 font-alt text-white">{{comments}}</span></div></div></a></div>',
+			limit: 20
+		});
+	}
+
+	// Model feed
+	if ( $('#gramfeed').length ) {
+		$('#gramfeed').gramfeed({
+			username: Syngency.social.instagram.model_user_name,
+            size: 320,
+			template: '<div class="col-6 col-lg-4 col-xl-3 mb-4"><a href="{{link}}" rel="nofollow" target="_blank" class="instagram-img orient-{{orientation}}" style="background-image:url({{image}})" title="Open in Instagram"><div class="meta d-flex flex-column justify-content-center align-items-center text-center"><div class="likes mb-3"><i class="icon-heart small text-white"></i><span class="h5 font-alt text-white">{{likes}}</span></div><div class="comments"><i class="icon-bubble small text-white"></i><span class="h5 font-alt text-white">{{comments}}</span></div></div></a></div>',
+			limit: 12
+		});
+	}
+
+
+	// Sticky Header
+	// ----------------------------------------------------------
+	if ( $body.hasClass('not-home') ) {
+		var	scrollTopTolerance = 300,
+				scrollContentTop = Math.ceil($('#layout-content').offset().top),
+				scrollStickyTrigger = scrollContentTop + scrollTopTolerance,
+				scrollTop = null,
+				scrollHeaderIsSticky = false;
+
+		$window.scroll(function() {
+			scrollTop = $window.scrollTop();
+			// Prepare sticky header
+			if ( scrollTop > scrollContentTop ) {
+				$body.addClass('sticky-header-ready');
+			}
+			else {
+				$body.removeClass('sticky-header-ready');
+			}
+			if ( !scrollHeaderIsSticky && scrollTop > scrollStickyTrigger ) {
+				// Set sticky header class when scrolled to trigger
+				$body.addClass('sticky-header');
+				scrollHeaderIsSticky = true;
+			}
+			if ( scrollHeaderIsSticky && scrollTop == 0 ) {
+				// Back to start, remove sticky-header
+				$body.removeClass('sticky-header-ready sticky-header');
+				scrollHeaderIsSticky = false;
+			}
+		});
+	}
+
+});

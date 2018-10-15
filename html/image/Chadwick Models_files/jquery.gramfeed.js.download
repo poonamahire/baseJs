@@ -1,0 +1,99 @@
+(function($) {
+
+    $.gramfeed = function(element, options) {
+
+        var valid_sizes = [150,240,320,480,640];
+        var defaults = {
+            username: null,
+            url: 'https://www.instagram.com/',
+            limit: 12,
+            size: 240,
+            template: '<a class="gramfeed-img" href="{{link}}"><img src="{{image}}" alt="{{caption}}"></a>',
+        }
+
+        var plugin = this;
+
+        plugin.settings = {}
+
+        var $element = $(element),
+             element = element,
+			getURL;
+
+        plugin.init = function() {
+
+            plugin.settings = $.extend({}, defaults, options);
+            if ( plugin.settings.username === null ) {
+                console.error('No username specified');
+                return;
+            }
+			if ( plugin.settings.limit > 12 ) plugin.settings.limit = 12;
+
+		    var getURL = 'http://' + window.location.host + '/instagram.json?username=' + plugin.settings.username;
+
+            $.getJSON(getURL, function(response) {
+
+	            $element.empty();
+
+				var feed = response.feed;
+                for ( i = 0; i < plugin.settings.limit; i++ ) {
+                    if ( feed[i] === undefined ) return;
+
+                    var data = {
+                        id: feed[i].id,
+                        likes: feed[i].likes,
+                        comments: feed[i].comments,
+                        caption: feed[i].caption,
+                        image: feed[i].thumbnails[plugin.settings.size],
+                        link: 'https://www.instagram.com/p/' + feed[i].shortcode
+                    };
+                    var output = plugin._makeTemplate(plugin.settings.template,data);
+                    $element.append(output);
+                }
+            });
+        }
+
+        plugin._makeTemplate = function(template, data) {
+              var output, pattern, ref, varName, varValue;
+              pattern = /(?:\{{2})([\w\[\]\.]+)(?:\}{2})/;
+              output = template;
+              while (pattern.test(output)) {
+                varName = output.match(pattern)[1];
+                varValue = (ref = plugin._getObjectProperty(data, varName)) != null ? ref : '';
+                output = output.replace(pattern, function() {
+                  return "" + varValue;
+                });
+              }
+              return output;
+        };
+
+        plugin._getObjectProperty = function(object, property) {
+              var piece, pieces;
+              property = property.replace(/\[(\w+)\]/g, '.$1');
+              pieces = property.split('.');
+              while (pieces.length) {
+                piece = pieces.shift();
+                if ((object != null) && piece in object) {
+                  object = object[piece];
+                } else {
+                  return null;
+                }
+              }
+              return object;
+        };
+
+        plugin.init();
+
+    }
+
+    $.fn.gramfeed = function(options) {
+
+        return this.each(function() {
+            if (undefined == $(this).data('gramfeed')) {
+                var plugin = new $.gramfeed(this, options);
+                $(this).data('gramfeed', plugin);
+            }
+        });
+
+    }
+
+})(jQuery);
